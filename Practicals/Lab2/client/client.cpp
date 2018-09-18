@@ -26,7 +26,7 @@
 #define WELCOME "hello"
 
 // The (fixed) size of message that we send between the two programs
-#define MESSAGESIZE 40
+#define MESSAGESIZE 40			// in bytes
 
 
 // Prototypes
@@ -52,7 +52,11 @@ int main()
 	// Create a TCP socket that we'll connect to the server
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	// FIXME: check for errors from socket
-
+	//Fixed
+	if (sock == INVALID_SOCKET)
+	{
+		die("Invalid socket");
+	}
 	// Fill out a sockaddr_in structure with the address that
 	// we want to connect to.
 	sockaddr_in addr;
@@ -61,6 +65,7 @@ int main()
 	addr.sin_port = htons(SERVERPORT);
 	addr.sin_addr.s_addr = inet_addr(SERVERIP);
 	
+
 	// inet_ntoa formats an IP address as a string.
 	printf("IP address to connect to: %s\n", inet_ntoa(addr.sin_addr));
 	// ntohs does the opposite of htons.
@@ -80,8 +85,12 @@ int main()
 	// We expect the server to send us a welcome message (WELCOME) when we connect.
 
 	// Receive a message.
-	recv(sock, buffer, MESSAGESIZE, 0);
 	// FIXME: check for errors, or for unexpected message size
+	//Fixed
+	if (recv(sock, buffer, MESSAGESIZE, 0) == SOCKET_ERROR)
+	{
+		die("Receive failed");
+	}
 
 	// Check it's what we expected.
 	if (memcmp(buffer, WELCOME, strlen(WELCOME)) != 0)
@@ -98,28 +107,42 @@ int main()
 		std::string line;
 		std::getline(std::cin, line);
 		// Now "line" contains what the user typed (without the trailing \n).
-
+		const void *thisMessage = line.c_str();
+		size_t numline = line.size();
 		// Copy the line into the buffer, filling the rest with dashes.
-		memset(buffer, '-', MESSAGESIZE);
-		memcpy(buffer, line.c_str(), line.size());
-		// FIXME: if line.size() is bigger than the buffer it'll overflow (and likely corrupt memory)
 
-		// Send the message to the server.
-		send(sock, buffer, MESSAGESIZE, 0);
-		// FIXME: check for error from send
+		for (int i = 0; i <= numline; i += MESSAGESIZE)
+			{
+				std::string substring = line.substr(i, MESSAGESIZE);
+				memset(buffer, '-', MESSAGESIZE);
+				memcpy(buffer, substring.c_str(), substring.size());
+				// FIXME: if line.size() is bigger than the buffer it'll overflow (and likely corrupt memory)			
+				// Send the message to the server.
+				// FIXME: check for error from send
+				//fixed
+				if (send(sock, buffer, MESSAGESIZE, 0) == SOCKET_ERROR)
+				{
+					die("Can't send to server");
+				}
+				// Read a response back from the server.
+				int count = recv(sock, buffer, MESSAGESIZE, 0);
+				// FIXME: check for error from recv
+				// fixed
+				if (count == SOCKET_ERROR)
+				{
+					die("Can't receive response from server");
+				}
 
-		// Read a response back from the server.
-		int count = recv(sock, buffer, MESSAGESIZE, 0);
-		// FIXME: check for error from recv
-		if (count <= 0)
-		{
-			printf("Server closed connection\n");
-			break;
-		}
+				if (count <= 0)
+				{
+					printf("Server closed connection\n");
+					break;
+				}
 
-		printf("Received %d bytes from the server: '", count);
-		fwrite(buffer, 1, count, stdout);
-		printf("'\n");
+				printf("Received %d bytes from the server: '", count);
+				fwrite(buffer, 1, count, stdout);
+				printf("'\n");
+			}
 	}
 
 	printf("Quitting\n");
@@ -143,3 +166,38 @@ void die(const char *message) {
 	exit(1);
 #endif
 }
+
+//Differences between server and client: client doesn't have a nested while loop. Server needs it to firstly listen at connections 
+//and secondly to receive messages
+//client doesn't have a listen or bind method
+
+//Removing htons and ntohs:
+// both of them > connection error
+// htons > connection error
+// ntohs > no connection error, but port printed is different: should be 5555 but it prints 45845
+
+//Running client without server triggers error in the if statemenr when connect is called:
+//if (connect(sock, (const sockaddr *)&addr, sizeof addr) == SOCKET_ERROR)
+//
+	//die("connect failed");
+//}
+
+//closing the server with client still running:
+//there is no error message set for receive response back from server,
+//the client waits for input and, when given, it just closes down, calling break in if statement below:
+//int count = recv(sock, buffer, MESSAGESIZE, 0);
+//if (count <= 0)
+//{
+	//printf("Server closed connection\n");
+	//break;
+//}
+
+//Closing client while server is still running doesn't trigger any error, 
+//as the connection just closes and server waits for new connection,
+//which is possible as, opening the client again, starts a new connection on a different port
+
+//Removing bind from server:
+//listen fails and application crashes
+//removing listen function from server:
+//server binds correctly, but error occurs when waiting for connection
+

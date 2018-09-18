@@ -25,7 +25,7 @@
 #define WELCOME "hello"
 
 // The (fixed) size of message that we send between the two programs
-#define MESSAGESIZE 40
+#define MESSAGESIZE 40		//in bytes
 
 
 // Prototypes
@@ -51,7 +51,11 @@ int main()
 	// Create a TCP socket that we'll use to listen for connections.
 	SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	// FIXME: we should test for error here
-
+	//Fixed
+	if (serverSocket == INVALID_SOCKET)
+	{
+		die("Invalid socket");
+	}
 	// Fill out a sockaddr_in structure to describe the address we'll listen on.
 	sockaddr_in serverAddr;
 	serverAddr.sin_family = AF_INET;
@@ -59,6 +63,7 @@ int main()
 	// htons converts the port number to network byte order (big-endian).
 	serverAddr.sin_port = htons(SERVERPORT);
 
+	//--client doesn't need any bind function
 	// Bind the server socket to that address.
 	if (bind(serverSocket, (const sockaddr *) &serverAddr, sizeof(serverAddr)) != 0)
 	{
@@ -162,3 +167,4 @@ void die(const char *message) {
 	exit(1);
 #endif
 }
+
