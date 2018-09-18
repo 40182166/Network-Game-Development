@@ -1,18 +1,7 @@
-﻿Build started 18/09/2018 11:53:30.
-     1>Project "C:\Users\amg\Desktop\Network Game Development\Network-Game-Development\Practicals\Lab2\client\client.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _VC80_UPGRADE=0x0600 /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc120.pdb" /Gd /TP /analyze- /errorReport:prompt client.cpp
-         client.cpp
-     1>c:\users\amg\desktop\network game development\network-game-development\practicals\lab2\client\client.cpp(66): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-                 c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1850) : see declaration of 'inet_addr'
-     1>c:\users\amg\desktop\network game development\network-game-development\practicals\lab2\client\client.cpp(70): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-                 c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1868) : see declaration of 'inet_ntoa'
-     1>c:\users\amg\desktop\network game development\network-game-development\practicals\lab2\client\client.cpp(114): warning C4018: '<=' : signed/unsigned mismatch
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug/client.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:".\Debug/client.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\Debug\client.lib" /MACHINE:X86 /SAFESEH:NO .\Debug/client.obj
-         client.vcxproj -> C:\Users\amg\Desktop\Network Game Development\Network-Game-Development\Practicals\Lab2\client\.\Debug\client.exe
-     1>Done Building Project "C:\Users\amg\Desktop\Network Game Development\Network-Game-Development\Practicals\Lab2\client\client.vcxproj" (Build target(s)).
-
-Build succeeded.
-
-Time Elapsed 00:00:01.00
+﻿  client.cpp
+f:\desktop\università\year 4\computational intelligence\network-game-development\practicals\lab2\client\client.cpp(114): warning C4018: '<=': signed/unsigned mismatch
+f:\desktop\università\year 4\computational intelligence\network-game-development\practicals\lab2\client\client.cpp(66): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1830): note: see declaration of 'inet_addr'
+f:\desktop\università\year 4\computational intelligence\network-game-development\practicals\lab2\client\client.cpp(70): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1848): note: see declaration of 'inet_ntoa'
+  client.vcxproj -> F:\Desktop\Università\Year 4\Computational Intelligence\Network-Game-Development\Practicals\Lab2\client\.\Debug\client.exe

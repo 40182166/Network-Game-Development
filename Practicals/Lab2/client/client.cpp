@@ -51,8 +51,8 @@ int main()
 
 	// Create a TCP socket that we'll connect to the server
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-	// FIXME: check for errors from socket
-	//Fixed
+	// FIXED: check for errors from socket
+
 	if (sock == INVALID_SOCKET)
 	{
 		die("Invalid socket");
@@ -85,8 +85,7 @@ int main()
 	// We expect the server to send us a welcome message (WELCOME) when we connect.
 
 	// Receive a message.
-	// FIXME: check for errors, or for unexpected message size
-	//Fixed
+	// FIXED: check for errors, or for unexpected message size
 	if (recv(sock, buffer, MESSAGESIZE, 0) == SOCKET_ERROR)
 	{
 		die("Receive failed");
@@ -111,23 +110,23 @@ int main()
 		size_t numline = line.size();
 		// Copy the line into the buffer, filling the rest with dashes.
 
+		//using a for loop to split up the string in subtrings of size MESSAGESIZE
 		for (int i = 0; i <= numline; i += MESSAGESIZE)
 			{
 				std::string substring = line.substr(i, MESSAGESIZE);
 				memset(buffer, '-', MESSAGESIZE);
 				memcpy(buffer, substring.c_str(), substring.size());
-				// FIXME: if line.size() is bigger than the buffer it'll overflow (and likely corrupt memory)			
+				// FIXED: if line.size() is bigger than the buffer it'll overflow (and likely corrupt memory)			
 				// Send the message to the server.
-				// FIXME: check for error from send
-				//fixed
+
+				// FIXED: check for error from send
 				if (send(sock, buffer, MESSAGESIZE, 0) == SOCKET_ERROR)
 				{
 					die("Can't send to server");
 				}
 				// Read a response back from the server.
 				int count = recv(sock, buffer, MESSAGESIZE, 0);
-				// FIXME: check for error from recv
-				// fixed
+				// FIXED: check for error from recv
 				if (count == SOCKET_ERROR)
 				{
 					die("Can't receive response from server");
@@ -167,6 +166,8 @@ void die(const char *message) {
 #endif
 }
 
+////////////////// LAB EXCERCISES //////////////////
+
 //Differences between server and client: client doesn't have a nested while loop. Server needs it to firstly listen at connections 
 //and secondly to receive messages
 //client doesn't have a listen or bind method
@@ -176,7 +177,7 @@ void die(const char *message) {
 // htons > connection error
 // ntohs > no connection error, but port printed is different: should be 5555 but it prints 45845
 
-//Running client without server triggers error in the if statemenr when connect is called:
+//Running client without server triggers error in the if statement when connect is called:
 //if (connect(sock, (const sockaddr *)&addr, sizeof addr) == SOCKET_ERROR)
 //
 	//die("connect failed");
@@ -192,12 +193,22 @@ void die(const char *message) {
 	//break;
 //}
 
-//Closing client while server is still running doesn't trigger any error, 
+//Closing client while server is =till running doesn't trigger any error, 
 //as the connection just closes and server waits for new connection,
 //which is possible as, opening the client again, starts a new connection on a different port
+//P.S. After fixing error handling, an error is triggered when client is not properly closed.
 
 //Removing bind from server:
 //listen fails and application crashes
 //removing listen function from server:
 //server binds correctly, but error occurs when waiting for connection
 
+//Fixed all  code bits
+
+//Long messages: they are sent to server up to 40th character as the buffer is completely full.
+//Error handling implementation avoids this, but it stops the application.
+//Fixed: message is just split in chunks of size of MESSAGESIZE
+
+//Implemented small for loop to invert case letter of buffer message,
+//therefore server sends message back to client with reverse case letters
+//so that lowercase char in array are converted to uppercase and vice versa

@@ -93,9 +93,11 @@ int main()
 		SOCKET clientSocket = accept(serverSocket, (sockaddr *) &clientAddr, &addrSize);
 		if (clientSocket == INVALID_SOCKET)
 		{
-			die("accept failed");
-			// FIXME: in a real server, we wouldn't want the server to crash if
+			//die("accept failed");
+			// FIXED: in a real server, we wouldn't want the server to crash if
 			// it failed to accept a connection -- recover more effectively!
+			printf("Can't accept this connection");
+			continue;		//I can't find a way to produce this condition, therefore not tested :/
 		}
 
 		printf("Client has connected from IP address %s, port %d!\n", inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));
@@ -108,15 +110,21 @@ int main()
 
 		// Send a welcome message to the client.
 		memcpy(buffer, WELCOME, strlen(WELCOME));
-		send(clientSocket, buffer, MESSAGESIZE, 0);
-		// FIXME: check for errors from send
+		// FIXED: check for errors from send
+		if (send(clientSocket, buffer, MESSAGESIZE, 0) == SOCKET_ERROR)
+		{
+			die("Can't send to client");
+		}
 
 		while (true)
 		{
 			// Receive as much data from the client as will fit in the buffer.
 			int count = recv(clientSocket, buffer, MESSAGESIZE, 0);
-			// FIXME: check for errors from recv
-
+			// FIXED: check for errors from recv
+			if (count == SOCKET_ERROR)
+			{
+				die("Can't receive data from client");
+			}
 			if (count <= 0) {
 				printf("Client closed connection\n");
 				break;
@@ -137,9 +145,26 @@ int main()
 			fwrite(buffer, 1, count, stdout);
 			printf("'\n");
 
+			//Inverting letter case of every char value in char array buffer
+			for (int i = 0; i < sizeof(buffer); ++i)
+			{
+				//if it's uppercase, make it lowercase and vice versa
+				if (isupper(buffer[i]))
+				{
+					buffer[i] = tolower(buffer[i]);
+				}
+				else
+				{
+					buffer[i] = toupper(buffer[i]);
+				}
+			}
 			// Send the same data back to the client.
-			send(clientSocket, buffer, MESSAGESIZE, 0);
-			// FIXME: check for errors from send
+			// FIXED: check for errors from send
+			if (send(clientSocket, buffer, MESSAGESIZE, 0) == SOCKET_ERROR)
+			{
+				die("Can't send to client");
+			}
+
 		}
 
 		printf("Closing connection\n");
