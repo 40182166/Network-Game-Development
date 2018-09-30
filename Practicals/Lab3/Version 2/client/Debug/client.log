@@ -1,0 +1,6 @@
+﻿  client.cpp
+f:\desktop\università\mprof games dev\network-game-development\practicals\lab3\version 2\client\client.cpp(66): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1830): note: see declaration of 'inet_addr'
+f:\desktop\università\mprof games dev\network-game-development\practicals\lab3\version 2\client\client.cpp(69): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1848): note: see declaration of 'inet_ntoa'
+  client.vcxproj -> F:\Desktop\Università\MProf Games Dev\Network-Game-Development\Practicals\Lab3\Version 2\client\.\Debug\client.exe
