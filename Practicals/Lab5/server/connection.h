@@ -26,8 +26,10 @@ public:
 	// Return whether this connection is in a state where we want to try
 	// reading from the socket.
 	bool wantRead();
-
 	bool wantWrite();
+
+	bool isReading = true;
+	bool isWriting = false;
 
 	// Call this when the socket is ready to read.
 	bool doRead();
@@ -41,9 +43,6 @@ private:
 	// The data we've read from the client.
 	int readCount_;
 	char readBuffer_[MESSAGESIZE];
-
-	int writeCount_;
-	char writeBuffer_[MESSAGESIZE];
 };
 
 #endif

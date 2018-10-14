@@ -68,12 +68,14 @@ int main()
 	while (true)
 	{
 		// The structure that describes the set of sockets we're interested in.
-		fd_set readable;
+		fd_set readable, writeable;
 		FD_ZERO(&readable);
+		FD_ZERO(&writeable);
 
 		// Add the server socket, which will become "readable" if there's a new
 		// connection to accept.
 		FD_SET(serverSocket, &readable);
+		FD_SET(serverSocket, &writeable);
 
 		// Add all of the connected clients' sockets.
 		for (auto conn: conns)
@@ -82,6 +84,7 @@ int main()
 			{
 				FD_SET(conn->sock(), &readable);
 			}
+
 		}
 
 		// The structure that describes how long to wait for something to happen.
@@ -93,7 +96,7 @@ int main()
 		// Wait for one of the sockets to become readable.
 		// (We can only get away with passing 0 for the first argument here because
 		// we're on Windows -- other sockets implementations need a proper value there.)
-		int count = select(0, &readable, NULL, NULL, &timeout);
+		int count = select(0, &readable, &writeable, NULL, &timeout);
 		if (count == SOCKET_ERROR)
 		{
 			die("select failed");
@@ -117,6 +120,7 @@ int main()
 				continue;
 			}
 
+			//no more than 2 connections
 			if (conns.size() >= 2)
 			{
 				closesocket(clientSocket);
@@ -138,6 +142,15 @@ int main()
 			if (FD_ISSET(conn->sock(), &readable))
 			{
 				dead |= conn->doRead();
+				//set as ready to write after read has been concluded
+				conn->wantWrite();
+				//setting as writeable
+				FD_SET(conn->sock(), &writeable);
+			}
+
+			if (FD_ISSET(conn->sock(), &writeable))
+			{
+				dead |= conn->doWrite();
 			}
 
 			if (dead)
